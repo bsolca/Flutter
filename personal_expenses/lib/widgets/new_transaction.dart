@@ -50,7 +50,6 @@ class _NewTransactionState extends State<NewTransaction> {
             ),
             FlatButton(
               child: Text('Add Transaction'),
-              textColor: Colors.purple,
               onPressed: submitData,
             )
           ],
