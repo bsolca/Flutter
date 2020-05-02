@@ -33,44 +33,31 @@ class TransactionList extends StatelessWidget {
           : ListView.builder(
               itemBuilder: (ctx, idx) {
                 return Card(
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        child: Text(
-                          '${transaction[idx].amount.toStringAsFixed(2)} €',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 5,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).accentColor,
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: FittedBox(
+                          child: Text(
+                            '${transaction[idx].amount} €',
+                            style: Theme.of(context).textTheme.body1,
                           ),
                         ),
-                        margin: EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 15,
-                        ),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                          color: Theme.of(context).accentColor,
-                          width: 2,
-                        )),
-                        padding: EdgeInsets.all(10),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            transaction[idx].title,
-                            style: Theme.of(context).textTheme.title,
-                          ),
-                          Text(
-                            DateFormat.yMMMMEEEEd()
-                                .format(transaction[idx].date),
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
+                    ),
+                    title: Text(
+                      transaction[idx].title,
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    subtitle:
+                        Text(DateFormat.yMMMd().format(transaction[idx].date)),
                   ),
                 );
               },
