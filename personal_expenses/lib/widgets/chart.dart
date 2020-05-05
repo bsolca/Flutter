@@ -10,7 +10,6 @@ class Chart extends StatelessWidget {
 
   double get totalSpending {
     return groupedTransactionValues.fold(0.0, (sum, item) {
-      print('DEBUG TESTY: sum: ${sum} + amount: ${item['amount']} ');
       return sum + item['amount'];
     });
   }
@@ -29,9 +28,6 @@ class Chart extends StatelessWidget {
           totalSum += recentTransactions[i].amount;
         }
       }
-
-      print(DateFormat.E().format(weekDay));
-      print(totalSum);
 
       return {
         'day': DateFormat.E().format(weekDay).substring(0, 1),

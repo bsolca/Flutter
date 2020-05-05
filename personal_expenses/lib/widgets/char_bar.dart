@@ -9,7 +9,6 @@ class ChartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('TESTY HFactor: $spendingPctOfTotal');
     return Column(
       children: <Widget>[
         FittedBox(
