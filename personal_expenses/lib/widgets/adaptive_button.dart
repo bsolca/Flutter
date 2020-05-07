@@ -7,6 +7,8 @@ class AdaptiveFlatButton extends StatelessWidget {
   final String textButton;
   final Function onPressedFunction;
 
+  AdaptiveFlatButton(this.textButton, this.onPressedFunction);
+
   @override
   Widget build(BuildContext context) {
     return Platform.isIOS
@@ -29,6 +31,4 @@ class AdaptiveFlatButton extends StatelessWidget {
             onPressed: onPressedFunction,
           );
   }
-
-  AdaptiveFlatButton(this.textButton, this.onPressedFunction);
 }
