@@ -1,5 +1,5 @@
-import 'package:fit_meal/category_item.dart';
 import 'package:fit_meal/dummy_data.dart';
+import 'package:fit_meal/widgets/category_item.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesPage extends StatelessWidget {
@@ -7,11 +7,16 @@ class CategoriesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FitMeal'),
+        title: const Text(
+          'FitMeal',
+          style: TextStyle(fontFamily: 'Raleway'),
+        ),
       ),
       body: GridView(
+        padding: const EdgeInsets.all(25),
         children: DUMMY_CATEGORIES
             .map((catData) => CategoryItem(
+                  catData.id,
                   catData.title,
                   catData.color,
                 ))
