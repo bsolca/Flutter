@@ -1,6 +1,6 @@
+import 'package:fit_meal/category_item.dart';
+import 'package:fit_meal/dummy_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/category_item.dart';
-import 'package:flutter_complete_guide/dummy_data.dart';
 
 class CategoriesPage extends StatelessWidget {
   @override
