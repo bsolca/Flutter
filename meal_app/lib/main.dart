@@ -1,5 +1,6 @@
 import 'package:fit_meal/pages/categories_page.dart';
 import 'package:fit_meal/pages/category_meals_page.dart';
+import 'package:fit_meal/pages/filters_page.dart';
 import 'package:fit_meal/pages/meal_detail_page.dart';
 import 'package:fit_meal/pages/tabs_page.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
       routes: {
         CategoryMealsPage.routeName: (ctx) => CategoryMealsPage(),
         MealDetailPage.routeName: (ctx) => MealDetailPage(),
+        FiltersPage.routeName: (ctx) => FiltersPage(),
       },
       // onUnknownRoute is like a 404 landing page
       onUnknownRoute: (settings) {
