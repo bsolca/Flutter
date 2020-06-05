@@ -1,3 +1,5 @@
+import 'package:fit_meal/dummy_data.dart';
+import 'package:fit_meal/models/meal.dart';
 import 'package:fit_meal/pages/categories_page.dart';
 import 'package:fit_meal/pages/category_meals_page.dart';
 import 'package:fit_meal/pages/filters_page.dart';
@@ -7,7 +9,43 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Map<String, bool> _filters = {
+    'gluten': false,
+    'lactose': false,
+    'vegan': false,
+    'vegetarian': false,
+  };
+
+  List<Meal> _availableMeals = DUMMY_MEALS;
+
+  void _setFilters(Map<String, bool> filterData) {
+    setState(() {
+      _filters = filterData;
+
+      _availableMeals = DUMMY_MEALS.where((meal) {
+        if (_filters['gluten'] && !meal.isGlutenFree) {
+          return false;
+        }
+        if (_filters['lactose'] && !meal.isLactoseFree) {
+          return false;
+        }
+        if (_filters['vegan'] && !meal.isVegan) {
+          return false;
+        }
+        if (_filters['vegetarian'] && !meal.isVegetarian) {
+          return false;
+        }
+        return true;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,9 +71,10 @@ class MyApp extends StatelessWidget {
       home: TabsPage(),
       initialRoute: '/',
       routes: {
-        CategoryMealsPage.routeName: (ctx) => CategoryMealsPage(),
+        CategoryMealsPage.routeName: (ctx) =>
+            CategoryMealsPage(_availableMeals),
         MealDetailPage.routeName: (ctx) => MealDetailPage(),
-        FiltersPage.routeName: (ctx) => FiltersPage(),
+        FiltersPage.routeName: (ctx) => FiltersPage(_filters, _setFilters),
       },
       // onUnknownRoute is like a 404 landing page
       onUnknownRoute: (settings) {
