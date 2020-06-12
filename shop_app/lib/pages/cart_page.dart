@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shopapp/providers/cart.dart';
+import 'package:shopapp/providers/cart.dart' show Cart;
+import 'package:shopapp/widgets/card_item.dart';
 
 class CartPage extends StatelessWidget {
   static const routeName = '/cart';
@@ -18,22 +19,44 @@ class CartPage extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(8),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
                     'Total',
                     style: TextStyle(fontSize: 20),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                  Spacer(),
                   Chip(
-                    label: Text('\$${cart.totalAmount}'),
+                    label: Text(
+                      '\$${cart.totalAmount}',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryTextTheme.title.color,
+                      ),
+                    ),
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
+                  FlatButton(
+                    onPressed: null,
+                    child: Text('ORDER NOW'),
+                    textColor: Theme.of(context).primaryColor,
+                  )
                 ],
               ),
             ),
-          )
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: cart.items.length,
+              itemBuilder: (ctx, i) => CartItem(
+                  // How to get value from map
+                  cart.items.values.toList()[i].id,
+                  cart.items.keys.toList()[i],
+                  cart.items.values.toList()[i].price,
+                  cart.items.values.toList()[i].quantity,
+                  cart.items.values.toList()[i].title),
+            ),
+          ),
         ],
       ),
     );
