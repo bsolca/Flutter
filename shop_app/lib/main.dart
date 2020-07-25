@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          // We don't use .value because it's a new object, we can use create
+          // TODO We don't use .value because it's a new object, we can use create
           create: (ctx) => Products(),
         ),
         ChangeNotifierProvider(

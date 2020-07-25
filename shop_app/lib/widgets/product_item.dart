@@ -45,7 +45,6 @@ class ProductItem extends StatelessWidget {
                 print(child.toString());
               },
             ),
-            child: Text('This will never re render'),
           ),
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
