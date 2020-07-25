@@ -26,6 +26,29 @@ class CartItem extends StatelessWidget {
       onDismissed: (direction) {
         Provider.of<Cart>(context, listen: false).removeItem(productId);
       },
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+              title: Text("Are you sure?"),
+              content: Text("Do you ant to remove the item from the cart?"),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop(false);
+                  },
+                  child: Text("No"),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop(true);
+                  },
+                  child: Text("Yes"),
+                ),
+              ],
+            ),
+        );
+      },
       child: Card(
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
         child: Padding(
@@ -34,7 +57,10 @@ class CartItem extends StatelessWidget {
             leading: CircleAvatar(
               child: Padding(
                 padding: const EdgeInsets.all(5),
-                child: Text('\$$price', style: TextStyle(fontSize: 8),),
+                child: Text(
+                  '\$$price',
+                  style: TextStyle(fontSize: 8),
+                ),
               ),
             ),
             title: Text(title),
