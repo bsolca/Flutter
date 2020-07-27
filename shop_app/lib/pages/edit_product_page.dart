@@ -45,6 +45,9 @@ class _EditProductPageState extends State<EditProductPage> {
   }
 
   void _saveForm() {
+    final isValid = _form.currentState.validate();
+    if (!isValid)
+      return;
     _form.currentState.save();
     print(_editedProduct.title);
     print(_editedProduct.description);
@@ -77,6 +80,9 @@ class _EditProductPageState extends State<EditProductPage> {
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_priceFocusNode);
                   },
+                  validator: (v) {
+                    return v.isEmpty ? 'Please provide a value' : null;
+                  },
                   onSaved: (value) {
                     _editedProduct = Product(
                       title: value,
@@ -95,6 +101,15 @@ class _EditProductPageState extends State<EditProductPage> {
                     FocusScope.of(context).requestFocus(_descriptionNode);
                   },
                   focusNode: _priceFocusNode,
+                  validator: (v) {
+                    if (v.isEmpty)
+                      return 'Please provide a value';
+                    if (double.tryParse(v) == null)
+                      return 'Please enter a number';
+                    if (double.parse(v) <= 0)
+                      return 'Please enter number greater than zero';
+                    return null;
+                  },
                   onSaved: (value) {
                     _editedProduct = Product(
                       title: _editedProduct.title,
@@ -110,6 +125,9 @@ class _EditProductPageState extends State<EditProductPage> {
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
                   focusNode: _descriptionNode,
+                  validator: (v) {
+                    return v.isEmpty ? 'Please provide a value' : null;
+                  },
                   onSaved: (value) {
                     _editedProduct = Product(
                       title: _editedProduct.title,
@@ -136,7 +154,7 @@ class _EditProductPageState extends State<EditProductPage> {
                           color: Colors.grey,
                         )),
                         child: _imageUrlController.text.isEmpty
-                            ? Text('Enter a URl')
+                            ? Text('Enter a URL')
                             : FittedBox(
                                 child: Image.network(_imageUrlController.text),
                                 fit: BoxFit.cover,
@@ -150,6 +168,9 @@ class _EditProductPageState extends State<EditProductPage> {
                         focusNode: _imageUrlNode,
                         onFieldSubmitted: (_) {
                           _saveForm();
+                        },
+                        validator: (v) {
+                          return v.isEmpty ? 'Please provide a value' : null;
                         },
                         onSaved: (value) {
                           _editedProduct = Product(
