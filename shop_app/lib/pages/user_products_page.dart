@@ -29,9 +29,9 @@ class UserProductsPage extends StatelessWidget {
           itemBuilder: (_, i) => Column(
             children: [
               UserProductItem(
-                key: Key(productsData.items[i].id),
-                title: productsData.items[i].title,
-                imageUrl: productsData.items[i].imageUrl,
+                productsData.items[i].id,
+                productsData.items[i].title,
+                productsData.items[i].imageUrl,
               ),
               Divider(),
             ],
