@@ -27,7 +27,7 @@ class Product with ChangeNotifier {
     return http
         .patch(url,
             body: json.encode({
-              'isFavorite': isFavorite,
+              'isFavorite': !isFavorite,
             }))
         .then((response) {
       if (response.statusCode >= 400) {
