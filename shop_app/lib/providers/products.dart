@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shopapp/models/http_exeption.dart';
 import 'package:shopapp/providers/product.dart';
 import 'package:http/http.dart' as http;
 
@@ -72,7 +73,8 @@ class Products with ChangeNotifier {
     final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json';
 
     if (index == -1) return null;
-    return http.patch(
+    return http
+        .patch(
       url,
       body: json.encode({
         'title': product.title,
@@ -80,20 +82,28 @@ class Products with ChangeNotifier {
         'price': product.price,
         'imageUrl': product.imageUrl,
       }),
-    ).then((value) {
+    )
+        .then((value) {
       _items[index] = product;
       notifyListeners();
     });
   }
 
-  void deleteProduct(String id) {
-    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json';
+  Future<void> deleteProduct(String id) {
+    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.';
     final _productIndex = _items.indexWhere((element) => element.id == id);
     final _product = _items[_productIndex];
-    _items.removeAt(_productIndex);
-    http.delete(url).catchError((_) {
-      _items.insert(_productIndex, _product);
+
+    return http.delete(url).then((response) {
+      _items.removeAt(_productIndex);
+      if (response.statusCode >= 400) {
+        _items.insert(_productIndex, _product);
+        notifyListeners();
+        throw HttpException('Could not delete product.').toString();
+      }
+      notifyListeners();
+    }).catchError((err) {
+      throw err;
     });
-    notifyListeners();
   }
 }
