@@ -82,39 +82,39 @@ class _EditProductPageState extends State<EditProductPage> {
     setState(() {
       _isLoading = true;
     });
-    if (_editedProduct.id != null) {
-      Provider.of<Products>(context)
-          .updateProduct(_editedProduct.id, _editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
-    } else {
-      try {
-        await Provider.of<Products>(context, listen: false)
-            .addProduct(_editedProduct);
-      } catch (error) {
-        await showDialog<Null>(
-          // TODO xxx<Null> to have the good return type
-          context: context,
-          builder: (ctx) => AlertDialog (
-            title: Text('An error occurred!'),
-            content: Text(error.toString()),
-            actions: [
-              FlatButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-                child: Text('Okay'),
-              ),
-            ],
-          ),
-        );
-      } finally {
+    try {
+      if (_editedProduct.id != null) {
+        await Provider.of<Products>(context)
+            .updateProduct(_editedProduct.id, _editedProduct);
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pop();
+      } else {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
       }
+    } catch (error) {
+      await showDialog<Null>(
+        // TODO xxx<Null> to have the good return type
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('An error occurred!'),
+          content: Text(error.toString()),
+          actions: [
+            FlatButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+              child: Text('Okay'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
     }
   }
 

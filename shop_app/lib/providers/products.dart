@@ -66,12 +66,24 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product product) {
+  Future<void> updateProduct(String id, Product product) {
     final index = _items.indexWhere((element) => element.id == id);
-    if (index != -1) {
+    debugPrint('TestyStart\t[1]:\n$id\nTestyEnd\t[1]\n');
+    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json';
+
+    if (index == -1) return null;
+    return http.patch(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+      }),
+    ).then((value) {
       _items[index] = product;
       notifyListeners();
-    }
+    });
   }
 
   void deleteProduct(String id) {
