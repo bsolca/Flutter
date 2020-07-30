@@ -69,7 +69,6 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product product) {
     final index = _items.indexWhere((element) => element.id == id);
-    debugPrint('TestyStart\t[1]:\n$id\nTestyEnd\t[1]\n');
     final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json';
 
     if (index == -1) return null;

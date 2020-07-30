@@ -9,6 +9,7 @@ import 'package:shopapp/providers/product.dart';
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final _scaffold = Scaffold.of(context);
     final product = Provider.of<Product>(
       context,
       listen: false,
@@ -41,8 +42,14 @@ class ProductItem extends StatelessWidget {
               ),
               color: Theme.of(context).accentColor,
               onPressed: () {
-                product.toggleFavoriteStatus();
-                print(child.toString());
+                product.toggleFavoriteStatus().catchError((err) {
+                  _scaffold.showSnackBar(SnackBar(
+                      backgroundColor: Theme.of(context).errorColor,
+                      content: Text(
+                        err.toString(),
+                        textAlign: TextAlign.center,
+                      )));
+                });
               },
             ),
           ),

@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shopapp/models/http_exeption.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,8 +21,22 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavoriteStatus() {
-    isFavorite = !isFavorite;
-    notifyListeners();
+  Future<void> toggleFavoriteStatus() {
+    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json';
+
+    return http
+        .patch(url,
+            body: json.encode({
+              'isFavorite': isFavorite,
+            }))
+        .then((response) {
+      if (response.statusCode >= 400) {
+        throw HttpException('Could not toggle favorite.');
+      }
+      isFavorite = !isFavorite;
+      notifyListeners();
+    }).catchError((err) {
+      throw err;
+    });
   }
 }
