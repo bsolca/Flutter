@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shopapp/providers/product.dart';
+import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   List<Product> _items = [
@@ -50,23 +53,35 @@ class Products with ChangeNotifier {
   }
 
   void addProduct(Product product) {
-    final _newProduct = Product(
-      title: product.title,
-      description: product.description,
-      imageUrl: product.imageUrl,
-      price: product.price,
-      id: TimeOfDay.now().toString(),
-    );
-    _items.add(_newProduct);
-    notifyListeners();
+    const url = 'https://flutter-udemy-42.firebaseio.com/products.json';
+    http.post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'imageUrl': product.imageUrl,
+        'price': product.price,
+        'isFavorite': product.isFavorite,
+      }),
+    ).then((response) {
+      final _newProduct = Product(
+        title: product.title,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        id: json.decode(response.body)['name'],
+      );
+      _items.add(_newProduct);
+      notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product product) {
     final index = _items.indexWhere((element) => element.id == id);
-     if (index != -1) {
-        _items[index] = product;
-       notifyListeners();
-     }
+    if (index != -1) {
+      _items[index] = product;
+      notifyListeners();
+    }
   }
 
   void deleteProduct(String id) {

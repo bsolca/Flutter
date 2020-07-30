@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/providers/product.dart';
 import 'package:shopapp/providers/products.dart';
+import 'package:shopapp/widgets/app_drawer.dart';
 
 class EditProductPage extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -77,11 +78,12 @@ class _EditProductPageState extends State<EditProductPage> {
     final isValid = _form.currentState.validate();
     if (!isValid) return;
     _form.currentState.save();
-    if (_editedProduct.id != '')
+    if (_editedProduct.id != null) {
       Provider.of<Products>(context)
           .updateProduct(_editedProduct.id, _editedProduct);
-    else
+    } else {
       Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    }
     Navigator.of(context).pop();
   }
 
@@ -97,6 +99,7 @@ class _EditProductPageState extends State<EditProductPage> {
           )
         ],
       ),
+      drawer: AppDrawer(),
       body: Form(
         key: _form,
         child: Padding(
