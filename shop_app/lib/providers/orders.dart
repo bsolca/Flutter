@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 import 'cart.dart';
+import 'package:http/http.dart' as http;
 
 class OrderItem {
   final String id;
@@ -23,16 +26,34 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  void addOrder(List<CartItem> cartProducts, double total) {
-    _orders.insert(
-      0,
-      OrderItem(
-        id: DateTime.now().toString(),
-        amount: total,
-        products: cartProducts,
-        dateTime: DateTime.now(),
-      ),
-    );
-    notifyListeners();
+  Future<void> addOrder(List<CartItem> cartProducts, double total) {
+    final url = 'https://flutter-udemy-42.firebaseio.com/orders.json';
+    final timestamp = DateTime.now();
+
+    return http
+        .post(url,
+            body: json.encode({
+              'amount': total,
+              'dateTime': timestamp.toIso8601String(),
+              'products': cartProducts
+                  .map((e) => {
+                        'id': e.id,
+                        'price': e.price,
+                        'quantity': e.quantity,
+                      })
+                  .toList()
+            }))
+        .then((response) {
+      _orders.insert(
+        0,
+        OrderItem(
+          id: json.decode(response.body)['name'],
+          amount: total,
+          products: cartProducts,
+          dateTime: timestamp,
+        ),
+      );
+      notifyListeners();
+    });
   }
 }

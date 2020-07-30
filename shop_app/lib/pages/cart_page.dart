@@ -37,7 +37,7 @@ class CartPage extends StatelessWidget {
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
                   FlatButton(
-                    onPressed: () {
+                    onPressed: cart.totalAmount == 0 ? null : () {
                       Provider.of<Orders>(context, listen: false).addOrder(
                           cart.items.values.toList(), cart.totalAmount);
                       cart.clear();
