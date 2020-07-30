@@ -75,7 +75,7 @@ class _EditProductPageState extends State<EditProductPage> {
       });
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) return;
     _form.currentState.save();
@@ -89,14 +89,16 @@ class _EditProductPageState extends State<EditProductPage> {
         _isLoading = false;
       });
     } else {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct)
-          .catchError((err) {
-        return showDialog<Null>( // TODO xxx<Null> to have the good return type
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        await showDialog<Null>(
+          // TODO xxx<Null> to have the good return type
           context: context,
-          builder: (ctx) => AlertDialog(
+          builder: (ctx) => AlertDialog (
             title: Text('An error occurred!'),
-            content: Text(err.toString()),
+            content: Text(error.toString()),
             actions: [
               FlatButton(
                 onPressed: () {
@@ -107,12 +109,12 @@ class _EditProductPageState extends State<EditProductPage> {
             ],
           ),
         );
-      }).then((_) {
+      } finally {
         setState(() {
           _isLoading = false;
         });
         Navigator.of(context).pop();
-      });
+      }
     }
   }
 
