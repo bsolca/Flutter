@@ -4,33 +4,31 @@ import 'package:shopapp/providers/orders.dart' show Orders;
 import 'package:shopapp/widgets/app_drawer.dart';
 import 'package:shopapp/widgets/order_item.dart';
 
-class OrdersPage extends StatefulWidget {
+class OrdersPage extends StatelessWidget {
   static const routeName = '/orders';
 
   @override
-  _OrdersPageState createState() => _OrdersPageState();
-}
-
-class _OrdersPageState extends State<OrdersPage> {
-  @override
-  void initState() {
-    Provider.of<Orders>(context, listen: false).getOrders();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final orderData = Provider.of<Orders>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Your Orders'),
       ),
       drawer: AppDrawer(),
-      body: orderData.orders.length == 0 ? null : ListView.builder(
-        itemCount: orderData.orders.length,
-        itemBuilder: (ctx, i) => OrderItem(orderData.orders[i]),
-      ),
+      body: FutureBuilder(
+          future: Provider.of<Orders>(context, listen: false).getOrders(),
+          builder: (ctx, snapData) {
+            if (snapData.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapData.error != null) {
+              return Text('An error occurred!');
+            }
+            return Consumer<Orders>(
+              builder: (ctx, orderData, child) => ListView.builder(
+                itemCount: orderData.orders.length,
+                itemBuilder: (ctx, i) => OrderItem(orderData.orders[i]),
+              ),
+            );
+          }),
     );
   }
 }
