@@ -9,6 +9,19 @@ class Auth with ChangeNotifier {
   DateTime _expiryTokenDate;
   String _userId;
 
+  bool get isAuth {
+    return token != null;
+  }
+
+  String get token {
+    if (_expiryTokenDate != null &&
+        _expiryTokenDate.isAfter(DateTime.now()) &&
+        _token != null) {
+      return _token;
+    }
+    return null;
+  }
+
   Future<void> _authenticate(String email, String password, String segment) {
     const apiKey = String.fromEnvironment('WEB_API_KEY');
     final url =
@@ -27,6 +40,14 @@ class Auth with ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+      _expiryTokenDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(responseData['expiresIn']),
+        ),
+      );
+      notifyListeners();
     }).catchError((err) => throw err);
   }
 
