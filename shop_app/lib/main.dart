@@ -19,10 +19,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // TODO We don't use .value because it's a new object, we can use create
         ChangeNotifierProvider(create: (ctx) => Auth()),
-        ChangeNotifierProvider(
-          // TODO We don't use .value because it's a new object, we can use create
-          create: (ctx) => Products(),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (ctx) => Products(null, []),
+          update: (ctx, auth, previousProducts) => Products(auth.token, previousProducts.items),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),

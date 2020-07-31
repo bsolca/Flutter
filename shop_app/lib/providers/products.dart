@@ -8,6 +8,10 @@ import 'package:http/http.dart' as http;
 class Products with ChangeNotifier {
   List<Product> _items = [];
 
+  final String authToken;
+
+  Products(this.authToken, this._items);
+
   List<Product> get favoriteItems {
     return _items.where((prodItem) => prodItem.isFavorite).toList();
   }
@@ -21,7 +25,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> getProducts() {
-    const url = 'https://flutter-udemy-42.firebaseio.com/products.json';
+    final url = 'https://flutter-udemy-42.firebaseio.com/products.json?auth=$authToken';
     List<Product> tempProducts = [];
 
     return http.get(url).then((response) {
