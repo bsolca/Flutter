@@ -26,6 +26,37 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
+  Future<void> getOrders() {
+    final url = 'https://flutter-udemy-42.firebaseio.com/orders.json';
+
+    return http.get(url).then((response) {
+      final List<OrderItem> loadedOrders = [];
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData == null) return;
+      extractedData.forEach((orderId, orderData) {
+        loadedOrders.add(OrderItem(
+          id: orderId,
+          amount: orderData['amount'],
+          dateTime: DateTime.parse(orderData['dateTime']),
+          products: (orderData['products'] as List<dynamic>)
+              .map(
+                (e) => CartItem(
+                  id: e['id'],
+                  title: e['title'],
+                  quantity: e['quantity'],
+                  price: e['price'],
+                ),
+              )
+              .toList(),
+        ));
+        _orders = loadedOrders.reversed.toList();
+        notifyListeners();
+      });
+    }).catchError((err) {
+      throw err;
+    });
+  }
+
   Future<void> addOrder(List<CartItem> cartProducts, double total) {
     final url = 'https://flutter-udemy-42.firebaseio.com/orders.json';
     final timestamp = DateTime.now();
@@ -40,6 +71,7 @@ class Orders with ChangeNotifier {
                         'id': e.id,
                         'price': e.price,
                         'quantity': e.quantity,
+                        'title': e.title,
                       })
                   .toList()
             }))
