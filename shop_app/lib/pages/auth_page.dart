@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopapp/models/http_exeption.dart';
+import 'package:shopapp/providers/auth.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -100,19 +103,62 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _submit() {
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('An error occurred'),
+        content: Text(message),
+        actions: [
+          FlatButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text('Okay'),
+          )
+        ],
+      ),
+    );
+  }
+
+  // TODO PREFER async/await over using raw futures.
+  // https://dart.dev/guides/language/effective-dart/usage#prefer-asyncawait-over-using-raw-futures
+  Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
-      // Invalid!
-      return;
+      // In valid!
+      return null;
     }
     _formKey.currentState.save();
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.Login) {
-      // Log user in
-    } else {
-      // Sign user up
+    try {
+      if (_authMode == AuthMode.Login) {
+        // Log user in
+        await Provider.of<Auth>(context, listen: false).logIn(
+          _authData['email'],
+          _authData['password'],
+        );
+      } else {
+        // Sign user up
+        await Provider.of<Auth>(context, listen: false).signUp(
+          _authData['email'],
+          _authData['password'],
+        );
+      }
+    } on HttpException catch (error) {
+      var errMessage = 'Could not authenticate';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errMessage = 'This email is already in use';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errMessage = 'This is not a valid email address';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errMessage = 'This password is too weak';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errMessage = 'This password is invalid';
+      }
+      _showErrorDialog(errMessage);
+    } catch (err) {
+      const errMessage = 'Could not authenticate';
+      _showErrorDialog(errMessage);
     }
     setState(() {
       _isLoading = false;

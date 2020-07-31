@@ -2,6 +2,12 @@
 
 Shop where you can offer your own product or create your order
 
+# Usage
+
+> flutter run --dart-define=WEB_API_KEY=SOME_VALUE
+
+Where `SOME_VALUE` is the Firebase API key
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
