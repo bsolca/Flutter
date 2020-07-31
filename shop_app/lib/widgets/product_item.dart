@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/pages/product_detail_page.dart';
+import 'package:shopapp/providers/auth.dart';
 import 'package:shopapp/providers/cart.dart';
 import 'package:shopapp/providers/product.dart';
 
@@ -10,6 +11,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _scaffold = Scaffold.of(context);
+    final authData = Provider.of<Auth>(context, listen: false);
     final product = Provider.of<Product>(
       context,
       listen: false,
@@ -42,7 +44,7 @@ class ProductItem extends StatelessWidget {
               ),
               color: Theme.of(context).accentColor,
               onPressed: () {
-                product.toggleFavoriteStatus().catchError((err) {
+                product.toggleFavoriteStatus(authData.token).catchError((err) {
                   _scaffold.showSnackBar(SnackBar(
                       backgroundColor: Theme.of(context).errorColor,
                       content: Text(

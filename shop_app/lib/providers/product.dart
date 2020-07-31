@@ -21,8 +21,8 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavoriteStatus() {
-    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json';
+  Future<void> toggleFavoriteStatus(String token) {
+    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json?auth=$token';
 
     return http
         .patch(url,

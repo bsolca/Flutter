@@ -37,6 +37,7 @@ class Products with ChangeNotifier {
           description: prodData['description'],
           price: prodData['price'],
           imageUrl: prodData['imageUrl'],
+          isFavorite: prodData['isFavorite'],
         ));
       });
       _items = tempProducts;
@@ -45,7 +46,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    const url = 'https://flutter-udemy-42.firebaseio.com/products.json';
+    final url = 'https://flutter-udemy-42.firebaseio.com/products.json?auth=$authToken';
 
     try {
       final response = await http.post(
@@ -73,7 +74,7 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product product) {
     final index = _items.indexWhere((element) => element.id == id);
-    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json';
+    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json?auth=$authToken';
 
     if (index == -1) return null;
     return http
@@ -93,7 +94,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) {
-    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.';
+    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json&authi=$authToken';
     final _productIndex = _items.indexWhere((element) => element.id == id);
     final _product = _items[_productIndex];
 
