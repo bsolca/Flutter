@@ -22,6 +22,10 @@ class Auth with ChangeNotifier {
     return null;
   }
 
+  String get userId {
+    return _userId;
+  }
+
   Future<void> _authenticate(String email, String password, String segment) {
     const apiKey = String.fromEnvironment('WEB_API_KEY');
     final url =

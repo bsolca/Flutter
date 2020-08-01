@@ -9,8 +9,9 @@ class Products with ChangeNotifier {
   List<Product> _items = [];
 
   final String authToken;
+  final String userId;
 
-  Products(this.authToken, this._items);
+  Products(this.authToken, this.userId, this._items);
 
   List<Product> get favoriteItems {
     return _items.where((prodItem) => prodItem.isFavorite).toList();
@@ -25,9 +26,9 @@ class Products with ChangeNotifier {
   }
 
   Future<void> getProducts() {
-    final url = 'https://flutter-udemy-42.firebaseio.com/products.json?auth=$authToken';
-    List<Product> tempProducts = [];
+    var url = 'https://flutter-udemy-42.firebaseio.com/products.json?auth=$authToken';
 
+    List<Product> tempProducts = [];
     return http.get(url).then((response) {
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       extractedData.forEach((prodId, prodData) {
@@ -37,11 +38,22 @@ class Products with ChangeNotifier {
           description: prodData['description'],
           price: prodData['price'],
           imageUrl: prodData['imageUrl'],
-          isFavorite: prodData['isFavorite'],
         ));
       });
-      _items = tempProducts;
-      notifyListeners();
+    }).then((response) {
+      url = 'https://flutter-udemy-42.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      return http.get(url).then((response) {
+        final favoriteResponse = json.decode(response.body);
+        tempProducts.forEach((element) {
+          if (favoriteResponse == null || favoriteResponse[element.id] == null) {
+            element.toggleFavoriteStatus(authToken, userId);
+          } else {
+            element.isFavorite = favoriteResponse[element.id];
+          }
+        });
+        _items = tempProducts;
+        notifyListeners();
+      });
     });
   }
 
@@ -56,7 +68,6 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
-          'isFavorite': product.isFavorite,
         }),
       );
       final _newProduct = Product(

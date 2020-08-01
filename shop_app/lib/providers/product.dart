@@ -18,17 +18,17 @@ class Product with ChangeNotifier {
     @required this.description,
     @required this.price,
     @required this.imageUrl,
-    this.isFavorite = false,
+    this.isFavorite = true,
   });
 
-  Future<void> toggleFavoriteStatus(String token) {
-    final url = 'https://flutter-udemy-42.firebaseio.com/products/$id.json?auth=$token';
+  Future<void> toggleFavoriteStatus(String token, String userId) {
+    final url = 'https://flutter-udemy-42.firebaseio.com/userFavorites/$userId/$id.json?auth=$token';
 
     return http
-        .patch(url,
-            body: json.encode({
-              'isFavorite': !isFavorite,
-            }))
+        .put(url,
+            body: json.encode(
+              !isFavorite,
+            ))
         .then((response) {
       if (response.statusCode >= 400) {
         throw HttpException('Could not toggle favorite.');
